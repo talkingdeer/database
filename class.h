@@ -1,0 +1,150 @@
+#pragma once
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <string.h>
+#include <cmath>
+#include <list>
+using namespace std;
+
+class Date
+{
+	int day;
+	int month;
+	int year;
+public:
+	Date(){
+		month = rand() % 12 + 1 ;
+		year =  rand() % 100 + 1924;
+		if(month == 2) {
+			day = rand() % 28 + 1;
+		} else if(month == 4 || month == 6 || month == 9 || month == 11) {
+			day = rand() % 30 + 1;
+		} else {
+			day = rand() % 31 + 1;
+		}
+		
+	}
+	Date(int day, int month, int year){
+		this -> day = day;
+		this -> month = month;
+		this -> year = year;
+	}
+	Date(const Date& date){
+		this -> day = date.day;
+		this -> month = date.month;
+		this -> year = date.year;
+	}
+	friend ostream& operator<<(ostream& stream, const Date& date)
+	{
+		if(date.day < 10){
+			stream << 0 << date.day;
+		} else {
+			stream << date.day;
+		}
+		stream << '.';
+		if(date.month < 10){
+			stream << 0 << date.month;
+		} else {
+			stream << date.month;
+		}
+		stream << '.';
+		stream << date.year;
+		return stream;
+	}
+	friend fstream& operator>>(fstream& stream, Date& date)
+	{
+		string s;
+		getline(stream, s, '.');
+		date.day = stoi(s);
+		getline(stream, s, '.');
+		date.month = stoi(s);
+		stream >> s;
+		date.year = stoi(s);
+		return stream;
+	}
+	
+	friend istream& operator>>(istream& stream, Date& date)
+	{
+		string s;
+		getline(stream, s, '.');
+		date.day = stoi(s);
+		getline(stream, s, '.');
+		date.month = stoi(s);
+		stream >> s;
+		date.year = stoi(s);
+		return stream;
+	}
+	
+	friend bool operator==(const Date& date1, const Date& date2)
+	{
+		if(date1.day == date2.day && date1.month == date2.month && date1.year == date2.year) return true;
+		return false;
+	}
+};
+
+class Person
+{
+	string lastName;
+	string firstName;
+	string surname;
+	Date dateOfBirth;
+	string citizenship;
+	bool exitPermit;
+	double rating;
+	
+public:
+	Person(string lastName, string firstName, string surname, Date dateOfBirth, string citizenship, bool exitPermit, double rating){
+		this -> lastName = lastName;
+		this -> firstName = firstName;
+		this -> surname = surname;
+		this -> dateOfBirth = dateOfBirth;
+		this -> citizenship = citizenship;
+		this -> exitPermit = exitPermit;
+		this -> rating = rating;
+	}
+	Person(){}
+	void pushLastName(string a){
+		lastName = a;
+	}
+	void pushFirstName(string a){
+		firstName = a;
+	}
+	void pushSurname(string a){
+		surname = a;
+	}
+	void pushCitizenship(string a){
+		citizenship = a;
+	}
+	void pushExitPermit(bool a){
+		exitPermit = a;
+	}
+	void pushDateOfBirth(Date a){
+		dateOfBirth = a;
+	}
+	void pushRating(double a){
+		rating = a;
+	}
+	string getFirstName(){
+		return firstName;
+	}
+	string getLastName(){
+		return lastName;
+	}
+	string getSurname(){
+		return surname;
+	}
+	Date getDate(){
+		return dateOfBirth;
+	}
+	double getRating(){
+		return rating;
+	}
+	
+	void print(){
+		cout << lastName << " " << firstName << " " << surname << " " << dateOfBirth << " " << citizenship << " " << exitPermit << " " << rating <<  endl;
+	}
+	void print(fstream& f){
+		f << lastName << " " << firstName << " " << surname << " " << dateOfBirth << " " << citizenship << " " << exitPermit << " " << rating;
+	}
+};
