@@ -7,6 +7,18 @@
 #include <list>
 using namespace std;
 
+class Date;
+class Person;
+bool load(fstream& f, list<Person>& base);
+bool add(list<Person>& base);
+bool print(list<Person>& base);
+bool save(fstream& f, list<Person>& base);
+bool generate(list<Person>& base);
+bool remove(list<Person>& base);
+bool findName(string name, list<Person>& base);
+bool findDate(Date d, list<Person>& base);
+bool findRating(double r, bool sign, list<Person>& base);
+
 class Date
 {
 	int day;
