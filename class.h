@@ -5,6 +5,7 @@
 #include <string.h>
 #include <cmath>
 #include <list>
+#include <sstream>
 using namespace std;
 
 class Date;
@@ -13,8 +14,8 @@ bool load(fstream& f, list<Person>& base);
 bool add(list<Person>& base);
 bool print(list<Person>& base);
 bool save(fstream& f, list<Person>& base);
-bool generate(list<Person>& base);
-bool remove(list<Person>& base);
+bool generate(list<Person>& base, int k);
+bool remove(list<Person>& base, string line);
 bool findName(string name, list<Person>& base);
 bool findDate(Date d, list<Person>& base);
 bool findRating(double r, bool sign, list<Person>& base);
@@ -24,6 +25,7 @@ class Date
 	int day;
 	int month;
 	int year;
+	
 public:
 	Date(){
 		month = rand() % 12 + 1 ;

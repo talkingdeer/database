@@ -107,12 +107,10 @@ bool save(fstream& f, list<Person>& base)
 	return true;
 }
 
-bool generate(list<Person>& base)
+bool generate(list<Person>& base, int k)
 {
 	cout << "...\n";
 	base.clear();
-	int k;
-	cin >> k;
 	for(int i = 0; i < k; i++){
 		if(rand() % 2){
 			Date d;
@@ -127,14 +125,12 @@ bool generate(list<Person>& base)
 	return true;
 }
 
-bool remove(list<Person>& base)
+bool remove(list<Person>& base, string line)
 {
 	bool fl = false;
 	cout << "...\n";
-	string firstName, lastName, surname;
-	cin >> lastName >> firstName >> surname;
 	for(auto it = base.begin(); it != base.end(); it++){
-		if((*it).getFirstName() == firstName && (*it).getLastName() == lastName && (*it).getSurname() == surname){
+		if((*it).getLastName() == string){
 			it = base.erase(it);
 			it--;
 			fl = true;

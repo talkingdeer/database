@@ -3,8 +3,9 @@
 int main()
 {
 	cout<< "\nThis is database of Migration Service. Type ? for more info.\n";
-	string line;
+	string line, word;
 	list<Person> base;
+	list<string> commands;
 	fstream f;
 	srand(time(NULL));
 	
@@ -15,33 +16,81 @@ int main()
 	}
 	
 	while(1){
-		cin >> line;
-	if(line == "?") cout << "List of commands: \n1. Exit\n2. Print\n3. Generate [number of people]\n4. Save\n5. Load\n6. Add [first name, last name, surname, date of birth, citizenship, exit permit, rating]\n7. Remove [full name]\n8. Find name [name] || date [date] || rating [< or > smth]\n9. Size\n";
-		else if (line == "Exit"){
-			break;
+		commands.clear();
+		getline(cin, line);
+		stringstream s(line);
+		while(s >> word){
+			commands.push_back(word);
 		}
-		else if (line == "Print"){
-			print(base);
+		auto it = commands.begin();
+		if(*it == "?"){
+			if(++it != commands.end()){
+				cout << "Unknown command. Please, try again.\n";
+			} else {
+				cout << "List of commands: \n1. Exit\n2. Print\n3. Generate [number of people]\n4. Save\n5. Load\n6. Add [first name, last name, surname, date of birth, citizenship, exit permit, rating]\n7. Remove [last name]\n8. Find name [name] || date [date] || rating [< or > smth]\n9. Size\n";
+			}
+		} else if (*it == "Exit"){
+			if(++it != commands.end()){
+				cout << "Unknown command. Please, try again.\n";
+			} else {
+				break;
+			}
+		} else if (*it == "Print"){
+			if(++it != commands.end()){
+				cout << "Unknown command. Please, try again.\n";
+			} else {
+				print(base);
+			}
+		} else if (*it == "Generate"){
+			if(++it == commands.end()){
+				cout << "Unknown command. Please, try again.\n";
+			} else {
+				int number = stoi(*it);
+				if(++it != commands.end()){
+					cout << "Unknown command. Please, try again.\n";
+				} else {
+					if(generate(base, number)) cout << "Successfully generated!\n";
+				}
+			}
+		} else if (*it == "Save"){
+			if(++it != commands.end()){
+				cout << "Unknown command. Please, try again.\n";
+			} else {
+				if(save(f, base)) cout << "Successfully saved!\n";
+			}
+		} else if (*it == "Load"){
+			if(++it != commands.end()){
+				cout << "Unknown command. Please, try again.\n";
+			} else {
+				if(load(f, base)) cout << "Successfully loaded!\n";
+			}
+		} else if (*it == "Size"){
+			if(++it != commands.end()){
+				cout << "Unknown command. Please, try again.\n";
+			} else {
+				cout << "...\nDatabase contains " << base.size() << " people.\n";
+			}
+		} else if (*it == "Remove"){
+			if(++it == commands.end()){
+				cout << "Unknown command. Please, try again.\n";
+			} else {
+				if(remove(base, *it)) {
+					cout << "Successfully removed!\n";
+				} else {
+					cout << "There are no people with such name.\n";
+				}
+			}
+		} else {
+			cout << "Unknown command. Please, try again.\n";
 		}
-		else if (line == "Generate"){
-			if(generate(base)) cout << "Successfully generated!\n";
-		}
-		else if (line == "Save"){
-			if(save(f, base)) cout << "Successfully saved!\n";
-		}
-		else if (line == "Load"){
-			if(load(f, base)) cout << "Successfully loaded!\n";
-		}
+	}
+		/*
+		
+		
 		else if (line == "Add"){
 			if(add(base)) cout << "Successfully added!\n";
 		}
-		else if (line == "Remove"){
-			if(remove(base)) {
-				cout << "Successfully removed!\n";
-			} else {
-				cout << "There are no people with such name.\n";
-			}
-		}
+		
 		else if (line == "Find"){
 			cin >> line;
 			if(line == "name"){
@@ -66,11 +115,7 @@ int main()
 					if(!findRating(r, 1, base)) cout << "There are no people rated greater than " << r << "\n";
 				}
 			}
-		} else if (line == "Size"){
-			cout << "...\nDatabase contains " << base.size() << " people.\n";
-		} else {
-			cout << "Unknown command. Please, try again.\n";
-		}
-	}
+		} 
+	}*/
 	return 0;
 }
