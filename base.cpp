@@ -130,7 +130,7 @@ bool remove(list<Person>& base, string line)
 	bool fl = false;
 	cout << "...\n";
 	for(auto it = base.begin(); it != base.end(); it++){
-		if((*it).getLastName() == string){
+		if((*it).getLastName() == line){
 			it = base.erase(it);
 			it--;
 			fl = true;
