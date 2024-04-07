@@ -50,30 +50,17 @@ bool load(fstream& f, list<Person>& base)
 	return true;
 }
 
-bool add(list<Person>& base)
+bool add(list<Person>& base, list<string>::const_iterator it)
 {
 	cout << "...\n";
-	string s;
-	bool b;
-	Date date;
-	double rating;
 	Person one;
-	cin >> s;
-	one.pushLastName(s);
-	cin >> s;
-	one.pushFirstName(s);
-	cin >> s;
-	one.pushSurname(s);
-	cin >> date;
-	one.pushDateOfBirth(date);
-	cin >> s;
-	one.pushCitizenship(s);
-	cin >> b;
-	one.pushExitPermit(b);
-	cin >> b;
-	one.pushExitPermit(b);
-	cin >> rating;
-	one.pushRating(rating);
+	one.pushLastName(*(it++));
+	one.pushFirstName(*(it++));
+	one.pushSurname(*(it++));
+	one.pushDateOfBirth(*(it++));
+	one.pushCitizenship(*(it++));
+	one.pushExitPermit(*(it++));
+	one.pushRating(*(it++));
 	base.push_back(one);
 	return true;
 }
@@ -139,6 +126,20 @@ bool remove(list<Person>& base, string line)
 	return fl;
 }
 
+bool find(list<Person>& base, string lastname, bool is_lastname, double rating, bool is_rating, bool is_greater, bool exitPermit, bool is_exitPermit)
+{
+	bool fl = false;
+	cout << "...\n";
+	for(auto it = base.begin(); it != base.end(); it++){
+		if(((is_lastname && (*it).getLastName() == lastname) || !is_lastname) && ((is_rating && is_greater && (*it).getRating() > rating) || (is_rating && !is_greater && (*it).getRating() < rating) || !is_rating) && ((is_exitPermit && (*it).getExitPermit() == exitPermit) || !is_exitPermit)) {
+			(*it).print();
+			fl = true;
+		}
+	}
+	
+	return fl;
+}
+/*
 bool findName(string name, list<Person>& base)
 {
 	bool fl = false;
@@ -186,4 +187,4 @@ bool findRating(double r, bool sign, list<Person>& base)
 		}
 	}
 	return fl;
-}
+}*/

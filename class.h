@@ -11,11 +11,12 @@ using namespace std;
 class Date;
 class Person;
 bool load(fstream& f, list<Person>& base);
-bool add(list<Person>& base);
+bool add(list<Person>& base, list<string>::const_iterator it);
 bool print(list<Person>& base);
 bool save(fstream& f, list<Person>& base);
 bool generate(list<Person>& base, int k);
 bool remove(list<Person>& base, string line);
+bool find(list<Person>& base, string lastname, bool is_lastname, double rating, bool is_rating, bool is_greater, bool exitPermit, bool is_exitPermit);
 bool findName(string name, list<Person>& base);
 bool findDate(Date d, list<Person>& base);
 bool findRating(double r, bool sign, list<Person>& base);
@@ -133,11 +134,34 @@ public:
 	void pushExitPermit(bool a){
 		exitPermit = a;
 	}
+	void pushExitPermit(string a){
+		if(a == "0"){
+			exitPermit = 0;
+		} else{
+			exitPermit = 1;
+		}
+	}
 	void pushDateOfBirth(Date a){
 		dateOfBirth = a;
 	}
+	void pushDateOfBirth(string a){
+		stringstream str(a);
+		string s;
+		int d, m, y;
+		getline(str, s, '.');
+		d = stoi(s);
+		getline(str, s, '.');
+		m = stoi(s);
+		getline(str, s);
+		y = stoi(s);
+		Date date(d, m, y);
+		dateOfBirth = date;
+	}
 	void pushRating(double a){
 		rating = a;
+	}
+	void pushRating(string a){
+		rating = stof(a);
 	}
 	string getFirstName(){
 		return firstName;
@@ -153,6 +177,10 @@ public:
 	}
 	double getRating(){
 		return rating;
+	}
+	
+	bool getExitPermit(){
+		return exitPermit;
 	}
 	
 	void print(){
