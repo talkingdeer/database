@@ -126,12 +126,20 @@ bool remove(list<Person>& base, string line)
 	return fl;
 }
 
-bool find(list<Person>& base, string lastname, bool is_lastname, double rating, bool is_rating, bool is_greater, bool exitPermit, bool is_exitPermit)
+bool find(list<Person>& base, string lastname, bool is_lastname, double rating_greater, double rating_less, bool is_rating, bool is_greater, bool is_less, bool exitPermit, bool is_exitPermit)
 {
 	bool fl = false;
 	cout << "...\n";
 	for(auto it = base.begin(); it != base.end(); it++){
-		if(((is_lastname && (*it).getLastName() == lastname) || !is_lastname) && ((is_rating && is_greater && (*it).getRating() > rating) || (is_rating && !is_greater && (*it).getRating() < rating) || !is_rating) && ((is_exitPermit && (*it).getExitPermit() == exitPermit) || !is_exitPermit)) {
+		if(((is_lastname && (*it).getLastName() == lastname) || !is_lastname)  && ((is_exitPermit && (*it).getExitPermit() == exitPermit) || !is_exitPermit)) {
+			if(is_rating){
+				if(is_greater){
+					if((*it).getRating() <= rating_greater) continue;
+				}
+				if(is_less){
+					if((*it).getRating() >= rating_less) continue;
+				}
+			}
 			(*it).print();
 			fl = true;
 		}
@@ -139,52 +147,3 @@ bool find(list<Person>& base, string lastname, bool is_lastname, double rating, 
 	
 	return fl;
 }
-/*
-bool findName(string name, list<Person>& base)
-{
-	bool fl = false;
-	cout << "...\n";
-	for(auto it = base.begin(); it != base.end(); it++){
-		if((*it).getFirstName() == name){
-			(*it).print();
-			fl = true;
-		}
-	}
-	
-	return fl;
-}
-
-bool findDate(Date d, list<Person>& base)
-{
-	bool fl = false;
-	cout << "...\n";
-	for(auto it = base.begin(); it != base.end(); it++){
-		if((*it).getDate() == d){
-			(*it).print();
-			fl = true;
-		}
-	}
-	return fl;
-}
-
-bool findRating(double r, bool sign, list<Person>& base)
-{
-	bool fl = false;
-	cout << "...\n";
-	if(sign){
-		for(auto it = base.begin(); it != base.end(); it++){
-			if((*it).getRating() > r){
-				(*it).print();
-				fl = true;
-			}
-		}
-	} else {
-		for(auto it = base.begin(); it != base.end(); it++){
-			if((*it).getRating() < r){
-				(*it).print();
-				fl = true;
-			}
-		}
-	}
-	return fl;
-}*/

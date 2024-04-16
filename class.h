@@ -16,10 +16,7 @@ bool print(list<Person>& base);
 bool save(fstream& f, list<Person>& base);
 bool generate(list<Person>& base, int k);
 bool remove(list<Person>& base, string line);
-bool find(list<Person>& base, string lastname, bool is_lastname, double rating, bool is_rating, bool is_greater, bool exitPermit, bool is_exitPermit);
-bool findName(string name, list<Person>& base);
-bool findDate(Date d, list<Person>& base);
-bool findRating(double r, bool sign, list<Person>& base);
+bool find(list<Person>& base, string lastname, bool is_lastname, double rating_greater, double rating_less, bool is_rating, bool is_greater, bool is_less, bool exitPermit, bool is_exitPermit);
 
 class Date
 {
