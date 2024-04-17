@@ -10,8 +10,9 @@ using namespace std;
 
 class Date;
 class Person;
+Date stodate(string a);
 bool load(fstream& f, list<Person>& base);
-bool add(list<Person>& base, list<string>::const_iterator it);
+bool add(list<Person>& base, string lastname, string firstname, string surname, Date dateofbirth, string citizenship, bool exitpermit, double rating);
 bool print(list<Person>& base);
 bool save(fstream& f, list<Person>& base);
 bool generate(list<Person>& base, int k);
