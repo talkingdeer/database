@@ -22,6 +22,54 @@ Date stodate(string a){
 	return date;
 }
 
+bool check_date(string s){
+	stringstream stream(s);
+	string w;
+	int number;
+	getline(stream, w, '.');
+	if(!check_int(w)) return false;
+	number = stoi(w);
+	if((number < 1 || number > 31) return false;
+	getline(stream, w, '.');
+	if(!check_int(w)) return false;
+	number = stoi(w);
+	if(number < 1 || number > 12) return false;
+	getline(stream, w);
+	if(!check_int(w)) return false;
+	number = stoi(w);
+	if(number < 1924 || number > 2024) return false;
+	return true;
+}
+
+bool check_int(string s){
+	int size = s.size();
+	if(size == 0) return false;
+	if((s[0] < '0' || s[0] > '9') && (s[0] != '-') && (s[0] != '+')) return false;
+	for(int i = 1; i < size; i++){
+		if(s[i] < '0' || s[i] > '9') return false;
+	}
+	return true;
+}
+
+bool check_bool(string s){
+	int size = s.size();
+	if(size != 1) return false;
+	if(s[0] == '0' || s[0] == '1') return true;
+	return false;
+}
+
+bool check_double(string s){
+	int size = s.size();
+	int dot_count = 0;
+	for(int i = 0; i < size; i++){
+		if((s[i] < '0' || s[i] > '9') && s[i] != '.') return false;
+		if(s[i] == '.') dot_count++;
+	}
+	if(dot_count != 1) return false;
+	if(size == 1) return false;
+	return true;
+}
+
 bool if_empty(fstream& f){
 	return f.peek() == ifstream::traits_type::eof();
 }
@@ -140,12 +188,12 @@ bool remove(list<Person>& base, string line)
 	return fl;
 }
 
-bool find(list<Person>& base, string lastname, bool is_lastname, double rating_greater, double rating_less, bool is_rating, bool is_greater, bool is_less, bool exitPermit, bool is_exitPermit)
+bool find(list<Person>& base, string lastname, bool is_lastname, double rating_greater, double rating_less, bool is_rating, bool is_greater, bool is_less, bool exitPermit, bool is_exitPermit, Date date, bool is_date)
 {
 	bool fl = false;
 	cout << "...\n";
 	for(auto it = base.begin(); it != base.end(); it++){
-		if(((is_lastname && (*it).getLastName() == lastname) || !is_lastname)  && ((is_exitPermit && (*it).getExitPermit() == exitPermit) || !is_exitPermit)) {
+		if(((is_lastname && (*it).getLastName() == lastname) || !is_lastname)  && ((is_exitPermit && (*it).getExitPermit() == exitPermit) || !is_exitPermit) && ((is_date && (*it).getDate() == date) || !is_date)) {
 			if(is_rating){
 				if(is_greater){
 					if((*it).getRating() <= rating_greater) continue;

@@ -11,13 +11,17 @@ using namespace std;
 class Date;
 class Person;
 Date stodate(string a);
+bool check_date(string s);
+bool check_int(string s);
+bool check_bool(string s);
+bool check_double(string s);
 bool load(fstream& f, list<Person>& base);
 bool add(list<Person>& base, string lastname, string firstname, string surname, Date dateofbirth, string citizenship, bool exitpermit, double rating);
 bool print(list<Person>& base);
 bool save(fstream& f, list<Person>& base);
 bool generate(list<Person>& base, int k);
 bool remove(list<Person>& base, string line);
-bool find(list<Person>& base, string lastname, bool is_lastname, double rating_greater, double rating_less, bool is_rating, bool is_greater, bool is_less, bool exitPermit, bool is_exitPermit);
+bool find(list<Person>& base, string lastname, bool is_lastname, double rating_greater, double rating_less, bool is_rating, bool is_greater, bool is_less, bool exitPermit, bool is_exitPermit, Date date, bool is_date);
 
 class Date
 {
@@ -93,6 +97,27 @@ public:
 	{
 		if(date1.day == date2.day && date1.month == date2.month && date1.year == date2.year) return true;
 		return false;
+	}
+	
+	Date& operator=(const Date& date)
+	{
+		day = date.day;
+		month = date.month;
+		year = date.year;
+		return *this;
+	}
+	
+	Date& operator=(const string& date)
+	{
+		stringstream stream(date);
+		string s;
+		getline(stream, s, '.');
+		day = stoi(s);
+		getline(stream, s, '.');
+		month = stoi(s);
+		stream >> s;
+		year = stoi(s);
+		return *this;
 	}
 };
 
