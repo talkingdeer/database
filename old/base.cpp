@@ -29,7 +29,7 @@ bool check_date(string s){
 	getline(stream, w, '.');
 	if(!check_int(w)) return false;
 	number = stoi(w);
-	if((number < 1 || number > 31) return false;
+	if(number < 1 || number > 31) return false;
 	getline(stream, w, '.');
 	if(!check_int(w)) return false;
 	number = stoi(w);
@@ -60,13 +60,9 @@ bool check_bool(string s){
 
 bool check_double(string s){
 	int size = s.size();
-	int dot_count = 0;
 	for(int i = 0; i < size; i++){
 		if((s[i] < '0' || s[i] > '9') && s[i] != '.') return false;
-		if(s[i] == '.') dot_count++;
 	}
-	if(dot_count != 1) return false;
-	if(size == 1) return false;
 	return true;
 }
 

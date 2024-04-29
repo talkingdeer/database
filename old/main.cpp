@@ -180,8 +180,11 @@ int main()
 												break;
 											}
 											if(check_double(*it)){
-												is_greater = true;
 												rating_greater = stof(*(it));
+												if(rating_greater > 1 || rating_greater < 0){
+													flag = false;
+													error = "Rating is a real number between 0 and 1\n";
+												} else is_greater = true;
 											} else {
 												flag = false;
 												error = "Incorrect rating\n";
@@ -194,8 +197,11 @@ int main()
 												break;
 											}
 											if(check_double(*it)){
-												is_less = true;
 												rating_less = stof(*(it));
+												if(rating_less > 1 || rating_less < 0){
+													flag = false;
+													error = "Rating is a real number between 0 and 1\n";
+												} else is_less = true;
 											} else {
 												flag = false;
 												error = "Incorrect rating\n";
