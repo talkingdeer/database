@@ -1,7 +1,7 @@
 #include "class.h"
 
-#define PORT    5555
-#define BUFLEN  512
+#define PORT 5555
+#define BUFLEN 512
 
 
 int  main (void)
@@ -84,7 +84,7 @@ int  main (void)
 
 int readFromClient(int fd, char *buf)
 {
-    int  nbytes;
+    int nbytes;
     nbytes = read(fd, buf, BUFLEN);
     if (nbytes < 0) {
         perror ("Server: read failure");
@@ -92,12 +92,12 @@ int readFromClient(int fd, char *buf)
     } else if (nbytes == 0) {
         return -1;
     } else {
-        fprintf(stdout,"Received from client: %s\n", buf);
+		cout << "Received from client " << fd << ": " << buf << "\n";
         return 0;
     }
 }
 
-void writeToClient(int fd, char *buf)
+void writeToClient(int fd, const char *buf)
 {
     int nbytes;
     nbytes = write(fd, buf, strlen(buf) + 1);

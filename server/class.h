@@ -18,7 +18,7 @@
 using namespace std;
 
 int readFromClient(int fd, char *buf);
-void writeToClient (int fd, char *buf);
+void writeToClient (int fd, const char *buf);
 
 class Date;
 class Person;
@@ -27,13 +27,13 @@ bool check_date(string s);
 bool check_int(string s);
 bool check_bool(string s);
 bool check_double(string s);
-char* load(fstream& f, list<Person>& base);
-char* add(list<Person>& base, string lastname, string firstname, string surname, Date dateofbirth, string citizenship, bool exitpermit, double rating);
-char* print(int i, list<Person>& base);
-char* save(fstream& f, list<Person>& base);
-bool generate(list<Person>& base, int k);
-char* remove(list<Person>& base, string line);
-bool find(int i, list<Person>& base, string lastname, bool is_lastname, double rating_greater, double rating_less, bool is_rating, bool is_greater, bool is_less, bool exitPermit, bool is_exitPermit, Date date, bool is_date);
+const char* load(fstream& f, list<Person>& base);
+const char* add(list<Person>& base, string lastname, string firstname, string surname, Date dateofbirth, string citizenship, bool exitpermit, double rating);
+const char* print(int i, list<Person>& base);
+const char* save(fstream& f, list<Person>& base);
+const char* generate(list<Person>& base, int k);
+const char* remove(list<Person>& base, string line);
+const char* find(int i, list<Person>& base, string lastname, bool is_lastname, double rating_greater, double rating_less, bool is_rating, bool is_greater, bool is_less, bool exitPermit, bool is_exitPermit, Date date, bool is_date);
 void execute(int i, char* buf, list<Person>& base, fstream& f);
 string person_to_str(Person person);
 
@@ -231,7 +231,7 @@ public:
 		stringstream s;
 		s << lastName << " " << firstName << " " << surname << " " << dateOfBirth << " " << citizenship << " " << exitPermit << " " << rating << '\n';
 		string tmp = s.str();
-		writeToClient(i, (char*)tmp.c_str());
+		writeToClient(i, tmp.c_str());
 	}
 	
 };

@@ -18,7 +18,7 @@ string answer;
 void execute(int i, char* buf, list<Person>& base, fstream& f){
 	try{
 		srand(time(NULL));
-		error = "Seems like your command is unknown or missing arguments\n";
+		error = "Seems like your command is unknown or is missing arguments\n";
 		flag = true;
 		commands.clear();
 		string line(buf);
@@ -27,13 +27,16 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 			commands.push_back(word);
 		}
 		auto it = commands.begin();
+		if(it == commands.end()){
+			writeToClient(i, error.c_str());
+		} else {
 		if(*it == "?"){
 			if(++it != commands.end()){
 				flag = false;
 				error = "There are too much arguments. Type ? to see the list of commands again\n";
 			} else {
 				answer = "List of commands: \n1. Exit\n2. Print\n3. Generate [number of people]\n4. Save\n5. Load\n6. Add [first name, last name, surname, date of birth, citizenship, exit permit, rating]\n7. Remove [last name]\n8. Find lastname [name] || exitpermit [exitpermit] || rating [< or > smth] || date [date] (or multiple options using && between them)\n9. Size\n";
-				writeToClient(i, answer.data());
+				writeToClient(i, answer.c_str());
 			}
 		} else if (*it == "Exit"){
 			if(++it != commands.end()){
@@ -54,17 +57,14 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 			} else {
 				if(!check_int(*it)) {
 					flag = false;
-					error = "Error. Number of people should be integer\n";
+					error = "Error. Number of people must be integer\n";
 				} else {
 					int number = stoi(*it);
 					if(++it != commands.end()){
 						flag = false;
-						error = "There are too much arguments. Type ? to see the list of commands again\n";
+						error = "There are too much arguments. Type ? to see the list of commands again\n\0";
 					} else {
-						if(generate(base, number)) {
-							answer = "Successfully generated!\n";
-							writeToClient(i, answer.data());
-						}
+						writeToClient(i, generate(base, number));
 						save(f, base);
 					}
 				}
@@ -90,12 +90,11 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 			} else {
 				int k = base.size();
 				if(k == 1) {
-					answer = "\nDatabase contains " + to_string(base.size()) + " person\n";
-					writeToClient(i, answer.data());
+					answer = "Database contains " + to_string(base.size()) + " person\n";
 				} else {
-					answer = "\nDatabase contains " + to_string(base.size()) + " people\n";
-					writeToClient(i, answer.data());
+					answer = "Database contains " + to_string(base.size()) + " people\n";
 				}
+				writeToClient(i, answer.c_str());
 			}
 		} else if (*it == "Add"){
 			string lastname;
@@ -188,6 +187,7 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 											if(rating_greater > 1 || rating_greater < 0){
 												flag = false;
 												error = "Rating is a real number between 0 and 1\n";
+												break;
 											} else is_greater = true;
 										} else {
 											flag = false;
@@ -205,6 +205,7 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 											if(rating_less > 1 || rating_less < 0){
 												flag = false;
 												error = "Rating is a real number between 0 and 1\n";
+												break;
 											} else is_less = true;
 										} else {
 											flag = false;
@@ -247,7 +248,9 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 						flag = false;
 						break;
 					}
-					if(++it == commands.end()) break;
+					if(++it == commands.end()) {
+						break;
+					}
 					if(*(it) != "&&") {
 						flag = false;
 						break;
@@ -255,11 +258,8 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 					it++;
 				} while(1);
 				if(flag){
-					if(!find(i, base, lastname, is_lastname, rating_greater, rating_less, is_rating, is_greater, is_less, exitPermit, is_exitPermit, date, is_date)){
-						answer = "Person hasn't found\n";
-						writeToClient(i, answer.data());
-					}
-				} 
+					writeToClient(i, find(i, base, lastname, is_lastname, rating_greater, rating_less, is_rating, is_greater, is_less, exitPermit, is_exitPermit, date, is_date));
+				}
 			}
 		} else if (*it == "Remove"){
 			if(++it == commands.end()){
@@ -276,11 +276,14 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 		} else {
 			flag = false;
 		}
-		if(!flag) writeToClient(i, error.data());
+		if(!flag){
+			writeToClient(i, error.c_str());
+		}
+		}
 	}
 	catch (invalid_argument const& ex){
 		answer = "Incorrect number\n";
-		writeToClient(i, answer.data());
+		writeToClient(i, answer.c_str());
     }
 }
 
@@ -346,12 +349,12 @@ bool if_empty(fstream& f){
 	return f.peek() == ifstream::traits_type::eof();
 }
 
-char* load(fstream& f, list<Person>& base)
+const char* load(fstream& f, list<Person>& base)
 {
 	f.open("database.txt", ios_base::in);
 	if(if_empty(f)){
 		f.close();
-		return (char*)"Database.txt is empty\n";
+		return "Database.txt is empty\n";
 	}
 	base.clear();
 	string s;
@@ -379,10 +382,10 @@ char* load(fstream& f, list<Person>& base)
 		base.push_back(one);
 	}
 	f.close();
-	return (char*)"Successfully loaded!\n";
+	return "Successfully loaded!\n";
 }
 
-char* add(list<Person>& base, string lastname, string firstname, string surname, Date dateofbirth, string citizenship, bool exitpermit, double rating)
+const char* add(list<Person>& base, string lastname, string firstname, string surname, Date dateofbirth, string citizenship, bool exitpermit, double rating)
 {
 	Person one;
 	one.pushLastName(lastname);
@@ -393,23 +396,23 @@ char* add(list<Person>& base, string lastname, string firstname, string surname,
 	one.pushExitPermit(exitpermit);
 	one.pushRating(rating);
 	base.push_back(one);
-	return (char*)"Successfully added!";
+	return "Successfully added!\n";
 }
 
-char* print(int i, list<Person>& base)
+const char* print(int i, list<Person>& base)
 {
 	string answer;
 	if(base.empty()) {
-		return (char*)"Database is empty\n";
+		return "Database is empty\n";
 	} else {
 		for(auto it = base.begin(); it != base.end(); it++){
 			(*it).print(i);
 		}
 	}
-	return (char*)"Successfully printed!";
+	return "Successfully printed!\n";
 }
 
-char* save(fstream& f, list<Person>& base)
+const char* save(fstream& f, list<Person>& base)
 {
 	f.open("database.txt", ios_base::out);
 	auto it = base.begin();
@@ -421,10 +424,10 @@ char* save(fstream& f, list<Person>& base)
 		(*it).print(f);
 	}
 	f.close();
-	return (char*)"Successfully saved!";
+	return "Successfully saved!\n";
 }
 
-bool generate(list<Person>& base, int k)
+const char* generate(list<Person>& base, int k)
 {
 	base.clear();
 	for(int i = 0; i < k; i++){
@@ -438,10 +441,10 @@ bool generate(list<Person>& base, int k)
 			base.push_back(one);
 		}
 	}
-	return true;
+	return "Successfully generated!\n";
 }
 
-char* remove(list<Person>& base, string line)
+const char* remove(list<Person>& base, string line)
 {
 	bool fl = false;
 	for(auto it = base.begin(); it != base.end(); it++){
@@ -451,13 +454,13 @@ char* remove(list<Person>& base, string line)
 			fl = true;
 		}
 	}
-	if(fl) return (char*)"Successfully removed!\n";
-	return (char*)"There are no people with such name\n";
+	if(fl) return "Successfully removed!\n";
+	return "There are no people with such name\n";
 }
 
-bool find(int i, list<Person>& base, string lastname, bool is_lastname, double rating_greater, double rating_less, bool is_rating, bool is_greater, bool is_less, bool exitPermit, bool is_exitPermit, Date date, bool is_date)
+const char* find(int i, list<Person>& base, string lastname, bool is_lastname, double rating_greater, double rating_less, bool is_rating, bool is_greater, bool is_less, bool exitPermit, bool is_exitPermit, Date date, bool is_date)
 {
-	bool fl = false;
+	const char* answer = "Person hasn't found\n";
 	for(auto it = base.begin(); it != base.end(); it++){
 		if(((is_lastname && (*it).getLastName() == lastname) || !is_lastname)  && ((is_exitPermit && (*it).getExitPermit() == exitPermit) || !is_exitPermit) && ((is_date && (*it).getDateOfBirth() == date) || !is_date)) {
 			if(is_rating){
@@ -469,10 +472,10 @@ bool find(int i, list<Person>& base, string lastname, bool is_lastname, double r
 				}
 			}
 			(*it).print(i);
-			fl = true;
+			answer = "Successfully found!\n";
 		}
 	}
-	return fl;
+	return answer;
 }
 
 string person_to_str(Person p){
