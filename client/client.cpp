@@ -57,7 +57,7 @@ int main(void)
 	while(1) {
 		writeToServer(sock, pid);
 		readFromServer(sock, pid);
-		sleep(rand() % 7);
+		sleep(rand() % 10 + 2);
 	}
 	fprintf (stdout, "The end\n");
 
