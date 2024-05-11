@@ -100,7 +100,7 @@ int readFromClient(int fd, char *buf)
 void writeToClient(int fd, const char *buf)
 {
     int nbytes;
-    nbytes = write(fd, buf, strlen(buf) + 1);
+    nbytes = write(fd, buf, strlen(buf));
     if (nbytes < 0) {
         perror ("Server: failed to write");
     }

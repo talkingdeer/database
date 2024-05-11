@@ -29,26 +29,24 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 		auto it = commands.begin();
 		if(it == commands.end()){
 			writeToClient(i, error.c_str());
+			writeToClient(i, "%");
 		} else {
 		if(*it == "?"){
 			if(++it != commands.end()){
 				flag = false;
 				error = "There are too much arguments. Type ? to see the list of commands again\n";
 			} else {
-				answer = "List of commands: \n1. Exit\n2. Print\n3. Generate [number of people]\n4. Save\n5. Load\n6. Add [first name, last name, surname, date of birth, citizenship, exit permit, rating]\n7. Remove [last name]\n8. Find lastname [name] || exitpermit [exitpermit] || rating [< or > smth] || date [date] (or multiple options using && between them)\n9. Size\n";
+				answer = "List of commands: \n1. Print\n2. Generate [number of people]\n3. Save\n4. Load\n5. Add [first name, last name, surname, date of birth, citizenship, exit permit, rating]\n6. Remove [last name]\n7. Find lastname [name] || exitpermit [exitpermit] || rating [< or > smth] || date [date] (or multiple options using && between them)\n8. Size\n";
 				writeToClient(i, answer.c_str());
-			}
-		} else if (*it == "Exit"){
-			if(++it != commands.end()){
-				flag = false;
-				error = "There are too much arguments. Type ? to see the list of commands again\n";
+				writeToClient(i, "%");
 			}
 		} else if (*it == "Print"){
 			if(++it != commands.end()){
 				flag = false;
 				error = "There are too much arguments. Type ? to see the list of commands again\n";
 			} else {
-				writeToClient(i, print(i, base));
+				print(i, base);
+				writeToClient(i, "%");
 			}
 		} else if (*it == "Generate"){
 			if(++it == commands.end()){
@@ -65,6 +63,7 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 						error = "There are too much arguments. Type ? to see the list of commands again\n\0";
 					} else {
 						writeToClient(i, generate(base, number));
+						writeToClient(i, "%");
 						save(f, base);
 					}
 				}
@@ -75,6 +74,7 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 				error = "There are too much arguments. Type ? to see the list of commands again\n";
 			} else {
 				writeToClient(i, save(f, base));
+				writeToClient(i, "%");
 			}
 		} else if (*it == "Load"){
 			if(++it != commands.end()){
@@ -82,6 +82,7 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 				error = "There are too much arguments. Type ? to see the list of commands again\n";
 			} else {
 				writeToClient(i, load(f, base));
+				writeToClient(i, "%");
 			}
 		} else if (*it == "Size"){
 			if(++it != commands.end()){
@@ -95,6 +96,7 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 					answer = "Database contains " + to_string(base.size()) + " people\n";
 				}
 				writeToClient(i, answer.c_str());
+				writeToClient(i, "%");
 			}
 		} else if (*it == "Add"){
 			string lastname;
@@ -143,6 +145,7 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 			}
 			if(flag){
 				writeToClient(i, add(base, lastname, firstname, surname, dateofbirth, citizenship, exitpermit, rating));
+				writeToClient(i, "%");
 			}
 		} else if (*it == "Find"){
 			if(++it == commands.end()){
@@ -259,6 +262,7 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 				} while(1);
 				if(flag){
 					writeToClient(i, find(i, base, lastname, is_lastname, rating_greater, rating_less, is_rating, is_greater, is_less, exitPermit, is_exitPermit, date, is_date));
+					writeToClient(i, "%");
 				}
 			}
 		} else if (*it == "Remove"){
@@ -271,6 +275,7 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 					error = "There are too much arguments. Type ? to see the list of commands again\n";
 				} else {
 					writeToClient(i, remove(base, _lastName));
+					writeToClient(i, "%");
 				}
 			}
 		} else {
@@ -278,12 +283,14 @@ void execute(int i, char* buf, list<Person>& base, fstream& f){
 		}
 		if(!flag){
 			writeToClient(i, error.c_str());
+			writeToClient(i, "%");
 		}
 		}
 	}
 	catch (invalid_argument const& ex){
 		answer = "Incorrect number\n";
 		writeToClient(i, answer.c_str());
+		writeToClient(i, "%");
     }
 }
 

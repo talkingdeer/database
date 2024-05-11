@@ -62,17 +62,17 @@ int writeToServer(int fd)
     int nbytes;
     char buf[BUFLEN];
 
-    fprintf(stdout,"Send to server > ");
+    std::cout << "Send to server > ";
     if (fgets(buf, BUFLEN, stdin) == nullptr) {
-	printf("error\n");
+        perror("fgets");
+        return -1;
     }
-    buf[strlen(buf) - 1] = 0;
 
     nbytes = write (fd, buf, strlen(buf) + 1);
     if (nbytes < 0){
-		perror("write"); 
-		return -1;
-	}
+        perror("write");
+        return -1;
+    }
     if (strstr(buf, "stop")) return -1;
     return 0;
 }
@@ -80,10 +80,18 @@ int writeToServer(int fd)
 
 int readFromServer (int fd)
 {
-	int n;
     char buf[BUFLEN];
-	if((n = read(fd, buf, BUFLEN)) > 0){
+    int nbytes;
+
+    nbytes = read(fd, buf, BUFLEN);
+	buf[nbytes] = '\0';
+	
+	while(strchr(buf, '%') == NULL){
 		std::cout << buf;
+		nbytes = read(fd, buf, BUFLEN);
+		buf[nbytes] = '\0';
 	}
-	return n;
+	buf[nbytes - 1] = '\0'
+    std::cout << buf;
+    return 0;
 }

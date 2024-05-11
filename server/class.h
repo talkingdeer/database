@@ -233,5 +233,4 @@ public:
 		string tmp = s.str();
 		writeToClient(i, tmp.c_str());
 	}
-	
 };
