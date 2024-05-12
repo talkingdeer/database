@@ -77,10 +77,9 @@ int readFromServer (int fd, pid_t pid)
 {
     char buf[BUFLEN];
     int nbytes;
-	std::cout << "Answer for client " << pid << ":\n";
     nbytes = read(fd, buf, BUFLEN);
 	buf[nbytes] = '\0';
-	
+	std::cout << "Answer for client " << pid << ":\n";
 	while(strchr(buf, '%') == NULL){
 		std::cout << buf;
 		nbytes = read(fd, buf, BUFLEN);
