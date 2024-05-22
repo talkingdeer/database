@@ -1,6 +1,6 @@
-CC=g++
+CC=g++ -std=c++20
 CFLAGS=-c -Wall
-LDFLAGS=
+LDFLAGS= 
 SOURCES=client.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=client
@@ -8,7 +8,7 @@ EXECUTABLE=client
 all: $(SOURCES) $(EXECUTABLE)
 	
 $(EXECUTABLE): $(OBJECTS) 
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@ -lpthread
 
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@

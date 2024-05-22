@@ -16,44 +16,34 @@
 #include <sstream>
 #include <semaphore>
 #include <thread>
-
-#define PORT 5555
-#define BUFLEN 512
+#include <stdio.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <time.h>
 
 using namespace std;
 
-extern binary_semaphore client_signal;
-
-int readFromClient(int fd, char *buf);
-void writeToClient (int fd, const char *buf);
 void* tcp_connection (void*);
+int readFromClientHTTP(int fd, char *buf);
+void writeToClientHTTP(int fd, char *buf);
 
 class Date;
 class Person;
-
-extern list<Person> base;
-extern fstream f;
-
 Date stodate(string a);
 bool check_date(string s);
 bool check_int(string s);
 bool check_bool(string s);
 bool check_double(string s);
-const char* load(fstream& f, list<Person>& base);
-const char* add(list<Person>& base, string lastname, string firstname, string surname, Date dateofbirth, string citizenship, bool exitpermit, double rating);
-const char* print(int i, list<Person>& base);
-const char* save(fstream& f, list<Person>& base);
-const char* generate(list<Person>& base, int k);
-const char* remove(list<Person>& base, string line);
-const char* find(int i, list<Person>& base, string lastname, bool is_lastname, double rating_greater, double rating_less, bool is_rating, bool is_greater, bool is_less, bool exitPermit, bool is_exitPermit, Date date, bool is_date);
-//void* execute(void* arg);
-void execute(int i, char* buf);
+string load(fstream& f, list<Person>& base);
+string add(list<Person>& base, string lastname, string firstname, string surname, Date dateofbirth, string citizenship, bool exitpermit, double rating);
+string print(int i, list<Person>& base);
+string save(fstream& f, list<Person>& base);
+string generate(list<Person>& base, int k);
+string remove(list<Person>& base, string line);
+string find(int i, list<Person>& base, string lastname, bool is_lastname, double rating_greater, double rating_less, bool is_rating, bool is_greater, bool is_less, bool exitPermit, bool is_exitPermit, Date date, bool is_date);
+string execute(int i, char* buf, list<Person>& base, fstream& f);
 string person_to_str(Person person);
-
-struct req{
-    int des;
-	char buf[BUFLEN];
-};
 
 class Date
 {
@@ -244,11 +234,5 @@ public:
 	}
 	void print(fstream& f){
 		f << lastName << " " << firstName << " " << surname << " " << dateOfBirth << " " << citizenship << " " << exitPermit << " " << rating;
-	}
-	void print(int i){
-		stringstream s;
-		s << lastName << " " << firstName << " " << surname << " " << dateOfBirth << " " << citizenship << " " << exitPermit << " " << rating << '\n';
-		string tmp = s.str();
-		writeToClient(i, tmp.c_str());
 	}
 };

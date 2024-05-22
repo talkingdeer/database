@@ -1,4 +1,4 @@
-CC=g++ -std=c++20
+CC=g++
 CFLAGS=-c -Wall
 LDFLAGS= 
 SOURCES=server.cpp base.cpp
@@ -8,7 +8,7 @@ EXECUTABLE=server
 all: $(SOURCES) $(EXECUTABLE)
 	
 $(EXECUTABLE): $(OBJECTS) 
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@ -lpthread
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@

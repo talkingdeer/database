@@ -8,31 +8,48 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <thread>
+#include <semaphore>
+#include <signal.h>
+#include <pthread.h>
+
+using namespace std;
 
 #define SERVER_PORT 5555
 #define SERVER_NAME "127.0.0.1"
 #define BUFLEN 512
+#define CLIENT_COUNT 4
 
-int writeToServer (int fd, pid_t pid);
-int readFromServer (int fd, pid_t pid);
-const char* random_command();
+string commands[5] = {"Find rating > 0.5 && < rating 0.7", "Print", "Find date 01.09.1939", "Generate 20", "Add Степанов Геннадий Русланович 08.01.2001 Украина 0 0.337255"};
 
-std::string commands[10] = {"?", "Generate 20", "Find rating > 0.5 && < 0.7", "Print", "Find lastname Ева Браун", "Find date 01.09.1939", "Oh hi Mark", "Find rating", "Size", "KYS"};
 
-int main(void)
-{
-	pid_t pid;
-	pid = fork();
-	pid = fork();
-	pid = fork();
-	srand(pid);
+void writeToServer(int fd){
+    const char* buf = commands[rand() % 5].c_str();
+    write(fd, buf, strlen(buf) + 1);
+}
+
+void readFromServer(int fd){
+    char buf[BUFLEN];
+    int nbytes;
+    nbytes = read(fd, buf, BUFLEN);
+	buf[nbytes] = '\0';
+	while(strchr(buf, '%') == NULL){
+		cout << buf;
+		nbytes = read(fd, buf, BUFLEN);
+		buf[nbytes] = '\0';
+	}
+	buf[nbytes - 1] = '\0';
+    std::cout << buf;
+}
+
+void* client_process(void* arg){
 	int err;
 	int sock;
 	struct sockaddr_in server_addr;
 	struct hostent *hostinfo;
 
 	hostinfo = gethostbyname(SERVER_NAME);
-	if ( hostinfo == NULL ) {
+	if (hostinfo == NULL) {
 		fprintf (stderr, "Unknown host %s.\n", SERVER_NAME);
 		exit (EXIT_FAILURE);
 	}
@@ -53,46 +70,27 @@ int main(void)
 		exit (EXIT_FAILURE);
 	}
 	fprintf (stdout, "Connection is ready\n");
-
-	while(1) {
-		writeToServer(sock, pid);
-		readFromServer(sock, pid);
-		sleep(rand() % 10 + 2);
+	while(1){
+		writeToServer(sock);
+		readFromServer(sock);
+		sleep(1);
 	}
-	fprintf (stdout, "The end\n");
-
-	close (sock);
-	exit (EXIT_SUCCESS);
-	
+	close(sock);
 }
 
-int writeToServer(int fd, pid_t pid)
-{
-    const char* buf = commands[rand() % 10].c_str();
-    write(fd, buf, strlen(buf) + 1);
-    return 0;
-}
 
-int readFromServer (int fd, pid_t pid)
+int main(void)
 {
-    char buf[BUFLEN];
-    int nbytes;
-    nbytes = read(fd, buf, BUFLEN);
-	buf[nbytes] = '\0';
-	std::cout << "Answer for client " << pid << ":\n";
-	while(strchr(buf, '%') == NULL){
-		std::cout << buf;
-		nbytes = read(fd, buf, BUFLEN);
-		buf[nbytes] = '\0';
+	int i;
+	pthread_t clients[CLIENT_COUNT];
+	for(i = 0; i < CLIENT_COUNT; i++){
+		pthread_create(&clients[i], NULL, client_process, (void*)&i);
 	}
-	buf[nbytes - 1] = '\0';
-    std::cout << buf;
-    return 0;
+	for(i = 0; i < CLIENT_COUNT; i++)
+		pthread_join(clients[i], NULL);
 }
 
-const char* random_command(){
-	return "f";
-}
+
 
 /*
 int main(void)
